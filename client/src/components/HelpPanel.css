@@ -1,0 +1,54 @@
+.help-panel { padding: 0; }
+.help-header { margin-bottom: 24px; }
+.help-header h2 { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+.help-subtitle { color: var(--text-muted); font-size: 14px; }
+
+.help-sections { display: flex; flex-direction: column; gap: 8px; }
+
+.help-accordion {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--bg-glass);
+  transition: border-color var(--transition-base);
+}
+.help-accordion.open { border-color: var(--border-accent); }
+
+.help-accordion-header {
+  width: 100%; display: flex; align-items: center; gap: 12px;
+  padding: 16px 20px; text-align: left;
+  transition: background var(--transition-fast);
+}
+.help-accordion-header:hover { background: var(--accent-glow); }
+
+.help-acc-icon { font-size: 20px; flex-shrink: 0; }
+.help-acc-title { flex: 1; font-size: 15px; font-weight: 600; color: var(--text-primary); }
+.help-acc-chevron { font-size: 10px; color: var(--text-muted); flex-shrink: 0; }
+
+.help-accordion-body {
+  padding: 4px 20px 20px 52px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.help-steps {
+  margin: 0; padding-left: 18px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.help-steps li { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+.help-cmd-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.help-cmd-table th {
+  text-align: left; padding: 8px 12px 6px; font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.help-cmd-table td { padding: 8px 12px; color: var(--text-muted); border-bottom: 1px solid var(--border-subtle); }
+.help-cmd-table tr:last-child td { border-bottom: none; }
+.help-cmd-table code {
+  background: var(--bg-input); color: var(--text-accent);
+  padding: 2px 8px; border-radius: 4px; font-size: 12px; font-family: monospace;
+}
+
+@media (max-width: 640px) {
+  .help-accordion-body { padding-left: 20px; }
+}

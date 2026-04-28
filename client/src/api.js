@@ -24,4 +24,10 @@ export const uploadImage = (formData) =>
     headers: { 'Content-Type': 'multipart/form-data' },
   });
 
+export const uploadAudio = (formData) =>
+  api.post('/api/upload/audio', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 120000,
+  });
+
 export default api;

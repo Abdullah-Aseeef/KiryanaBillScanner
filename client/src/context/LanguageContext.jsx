@@ -47,6 +47,22 @@ const translations = {
     processing_btn: 'Processing with Gemini...',
     processing_note: 'AI extraction can take up to a minute for complex images.',
 
+    // Mode toggle & voice upload
+    mode_photo: 'Bill Photo',
+    mode_voice: 'Voice Memo',
+    voice_drop_text: 'Click to choose audio file',
+    voice_drop_hint: 'Say items like "do kilo aalu, ek liter doodh"',
+    voice_formats: 'OGG, M4A, MP3, WAV up to 25MB',
+    voice_btn: 'Upload & Parse Voice',
+    voice_processing_btn: 'Transcribing...',
+    voice_processing_note: 'Speech-to-text can take up to 30 seconds.',
+    voice_prices_note: '⚠️ Prices not mentioned — open the Review tab to add them.',
+
+    // Help
+    nav_help: 'Help',
+    help_title: 'Help & Guide',
+    help_subtitle: 'Everything you need to know about Tajir',
+
     // WhatsApp CTA
     wa_title: 'Send via WhatsApp',
     wa_sub: 'Snap a photo of your bill and send it to',
@@ -118,6 +134,22 @@ const translations = {
     upload_btn: 'بل اپلوڈ اور پارس کریں',
     processing_btn: 'Gemini سے پروسیسنگ...',
     processing_note: 'پیچیدہ تصاویر کے لیے AI نکالنے میں ایک منٹ تک لگ سکتا ہے۔',
+
+    // Mode toggle & voice upload
+    mode_photo: 'بل فوٹو',
+    mode_voice: 'وائس میمو',
+    voice_drop_text: 'آڈیو فائل منتخب کریں',
+    voice_drop_hint: '"دو کلو آلو، ایک لیٹر دودھ" کی طرح بولیں',
+    voice_formats: 'OGG, M4A, MP3, WAV — 25MB تک',
+    voice_btn: 'وائس اپلوڈ اور پارس کریں',
+    voice_processing_btn: 'تبدیل ہو رہا ہے...',
+    voice_processing_note: 'آواز کو متن میں تبدیل کرنے میں 30 سیکنڈ لگ سکتے ہیں۔',
+    voice_prices_note: '⚠️ قیمتیں نہیں ملیں — جائزہ ٹیب میں شامل کریں۔',
+
+    // Help
+    nav_help: 'مدد',
+    help_title: 'رہنمائی',
+    help_subtitle: 'تاجر کے بارے میں سب کچھ جانیں',
 
     // WhatsApp CTA
     wa_title: 'واٹس ایپ پر بھیجیں',

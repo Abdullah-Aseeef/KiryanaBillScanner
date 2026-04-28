@@ -9,14 +9,16 @@ dotenv.config();
 const required = ['GOOGLE_PROJECT_ID', 'GEMINI_API_KEY'];
 
 const hasJsonFile = !!process.env.GOOGLE_APPLICATION_CREDENTIALS;
+const hasB64Creds = !!process.env.GOOGLE_CREDENTIALS_B64;
 const hasExplicitCreds = !!(process.env.GOOGLE_CLIENT_EMAIL && process.env.GOOGLE_PRIVATE_KEY);
 
-if (!hasJsonFile && !hasExplicitCreds) {
+if (!hasJsonFile && !hasB64Creds && !hasExplicitCreds) {
   console.error(
-    'FATAL: No Google Cloud Vision credentials found.\n' +
+    'FATAL: No Google Cloud credentials found.\n' +
     'Set one of:\n' +
-    '  A) GOOGLE_APPLICATION_CREDENTIALS (path to service account JSON), or\n' +
-    '  B) GOOGLE_CLIENT_EMAIL + GOOGLE_PRIVATE_KEY (for Render/production)'
+    '  A) GOOGLE_CREDENTIALS_B64 (base64-encoded service account JSON), or\n' +
+    '  B) GOOGLE_APPLICATION_CREDENTIALS (path to service account JSON), or\n' +
+    '  C) GOOGLE_CLIENT_EMAIL + GOOGLE_PRIVATE_KEY'
   );
   process.exit(1);
 }

@@ -28,7 +28,7 @@ router.get('/summary', async (req, res) => {
           totalRevenue: { $sum: '$subtotal' },
         },
       },
-      { $sort: { count: -1 } },
+      { $sort: { totalRevenue: -1 } },
       { $limit: 10 },
       {
         $project: {

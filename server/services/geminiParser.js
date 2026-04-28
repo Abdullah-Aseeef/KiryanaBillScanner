@@ -179,15 +179,16 @@ async function transcribeAudio(audioBuffer, mimeType) {
 
   const config = {
     encoding,
+    // OGG_OPUS requires explicit sample rate — WhatsApp voice notes default to 16000 Hz
+    sampleRateHertz: encoding === 'MP3' ? undefined : 16000,
     languageCode: 'ur-PK',
     alternativeLanguageCodes: ['en-PK'],
     model: 'default',
     enableAutomaticPunctuation: true,
   };
 
-  // sampleRateHertz required for LINEAR16 but auto-detected for OGG_OPUS/MP3
-  if (encoding === 'LINEAR16') {
-    config.sampleRateHertz = 16000;
+  if (config.sampleRateHertz === undefined) {
+    delete config.sampleRateHertz;
   }
 
   const [response] = await client.recognize({

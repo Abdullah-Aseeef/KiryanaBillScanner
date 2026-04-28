@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Dashboard from './components/Dashboard';
+import HelpPanel from './components/HelpPanel';
 import ReviewPanel from './components/ReviewPanel';
 import UploadForm from './components/UploadForm';
 import { useLanguage } from './context/LanguageContext';
@@ -50,6 +51,12 @@ function App() {
               >
                 ✏️ {t('nav_review')}
               </button>
+              <button
+                className={`nav-tab ${activeTab === 'help' ? 'active' : ''}`}
+                onClick={() => setActiveTab('help')}
+              >
+                ❓ {t('nav_help')}
+              </button>
             </nav>
             <button className="lang-toggle" onClick={toggle} title="Switch language">
               {t('lang_toggle')}
@@ -65,6 +72,7 @@ function App() {
           {activeTab === 'review' && (
             <ReviewPanel key={`review-${refreshKey}`} onBillVerified={handleBillVerified} />
           )}
+          {activeTab === 'help' && <HelpPanel />}
         </div>
       </main>
     </div>
