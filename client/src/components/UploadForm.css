@@ -71,3 +71,79 @@
   border-radius: 2px; animation: shimmer 1.5s ease-in-out infinite;
   background-size: 200% 100%;
 }
+
+/* How it works */
+.how-it-works {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+.how-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+}
+.how-step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent-glow);
+  border: 1px solid var(--border-accent);
+  color: var(--accent-light);
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.how-step-title { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+.how-step-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+.how-step-arrow { color: var(--text-muted); font-size: 18px; flex-shrink: 0; }
+
+/* Sample output */
+.sample-output {
+  background: var(--bg-glass);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+.sample-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+.sample-rows { display: flex; flex-direction: column; gap: 6px; }
+.sample-row {
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.sample-item { flex: 1; color: var(--text-primary); font-weight: 500; }
+.sample-qty { color: var(--text-muted); min-width: 56px; text-align: right; }
+.sample-price { color: var(--text-accent); font-weight: 600; min-width: 72px; text-align: right; }
+.sample-total-row {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+@media (max-width: 640px) {
+  .how-it-works { flex-direction: column; align-items: flex-start; }
+  .how-step-arrow { display: none; }
+}

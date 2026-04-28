@@ -234,3 +234,92 @@ Complete
 - Phase 3 — Route integration (upload.js and webhook.js consume new parser output, map to new LineItem fields, distinct error messages for Vision vs Gemini failures)
 - Phase 4 — Analytics and review UX (analytics.js aggregates by item/quantity; ReviewPanel uses item/quantity/price, no unit/rawName columns; verify payload updated)
 - Phase 5 — seeder.js migrated to new schema; @google-cloud/vision installed; migration script at server/scripts/migrateLineItemsToV2.js (run: npm run migrate)
+
+---
+
+## Feature Roadmap (Priority Order)
+
+### Phase 6 — Enhanced WhatsApp Experience & UX Polish
+
+#### 1. Smart WhatsApp Summary Replies
+**Current:** Generic success message with item count and total.
+**Target:** Include link to web dashboard (`https://kiryana-bill-scanner.vercel.app`) and formatted summary showing top 3 items from bill.
+**Implementation:** Modify `webhook.js` WhatsApp reply logic to:
+- Extract top 3 items by quantity or value from parsed LineItems
+- Format reply with inline link: "For more details, visit: https://kiryana-bill-scanner.vercel.app"
+- Include formatted item list (e.g., "Aalu (5kg), Chawal (2kg), Namak (1kg)")
+
+#### 2. WhatsApp Interactive Menu (Deferred to Phase 7)
+**Vision:** User sends message "menu" → WhatsApp interactive buttons (View Revenue, Top Items, Weekly Summary, Send Bill).
+**Blocker:** Requires Meta WhatsApp Business API interactive message template approval process. Defer until core features stabilize.
+**Note:** Document as feature request for future reference.
+
+#### 3. Website Bill Upload Instructions & WhatsApp CTA
+**Current:** Upload form is standalone, no guidance.
+**Target:** 
+- Add "Sample Bill" section showing before/after (parsed example)
+- Display WhatsApp CTA card: "Or send bill photo to +1 (555) 629-1286 on WhatsApp for instant parsing"
+- Update `UploadForm.jsx` with instructions panel; add new component `WhatsAppCTA.jsx`
+- Place CTA prominently above or below upload form
+
+#### 4. Urdu/English Language Toggle
+**Current:** Hardcoded English UI labels.
+**Target:** Site-wide language toggle storing preference in localStorage.
+**Implementation:** 
+- Create `src/context/LanguageContext.jsx` with i18n keys
+- Add toggle button to header (or sidebar)
+- Update all component labels: Dashboard, ReviewPanel, UploadForm, Analytics cards
+- Use translation object structure: `{ en: "...", ur: "..." }`
+- Include translations for: "Total Revenue", "Top Items", "Items Sold", "Upload Bill", "Verify", "Sample", etc.
+
+#### 5. WhatsApp Audio Voice Messages (Deferred to Phase 8)
+**Current:** Only image-based bills.
+**Vision:** User sends voice memo → extract speech-to-text → parse as bill items.
+**Blocker:** Requires speech-to-text API (Google Cloud Speech or Whisper); significant scope creep. **Defer.**
+**Note:** Revisit once image pipeline is proven stable in production; estimate +50 API tokens per audio message.
+
+#### 6. Improved OCR with Column Detection Strategy
+**Current:** Gemini structuring assumes flexible bill format.
+**Target:** Pre-process Vision OCR output to detect bill layout and optimize parsing:
+- **2-column layout** (item | total price): Parse as `{ item, price }`
+- **3-column layout** (item | price-per-unit | quantity): Parse as `{ item, price, quantity }`
+- Update `kiryanaBillPrompt.js` to accept layout hint from Vision OCR heuristic
+- Implementation: Add `detectBillColumns()` function in `geminiParser.js` that analyzes raw OCR text for column patterns and whitespace alignment before Gemini structuring
+
+---
+
+## Implementation Priority Matrix
+
+| Phase | Feature | Est. Effort | Dependency | Priority |
+|-------|---------|-------------|-----------|----------|
+| 6.1   | WhatsApp Summary Reply | 2–3 hrs | None | **HIGH** |
+| 6.3   | Website Instructions + CTA | 2 hrs | None | **HIGH** |
+| 6.4   | Urdu/English Toggle | 3–4 hrs | None | **MEDIUM** |
+| 6.6   | OCR Column Detection | 4–5 hrs | Current Vision pipeline | **MEDIUM** |
+| 7     | WhatsApp Interactive Menu | 3 hrs | Meta API approval | LOW |
+| 8     | Audio Voice Messages | 6–8 hrs | Speech-to-text API | LOW |
+
+---
+
+## Guidance for Claude Code (Phase 6+)
+
+When requesting Phase 6+ features:
+1. **Reference the phase and feature number** — e.g., "Implement Phase 6.1: WhatsApp Summary Reply"
+2. **Link to this roadmap** — "See CLAUDE.md § Feature Roadmap for context"
+3. **Specify scope boundaries** — e.g., "Only add top 3 items; keep reply under 160 chars"
+4. **Provide constants upfront:**
+   - WhatsApp number: `+1 (555) 629-1286`
+   - Website URL: `https://kiryana-bill-scanner.vercel.app`
+   - Translation keys for Urdu/English
+5. **Suggest test vectors** — real bill examples, sample OCR outputs for column detection
+
+---
+
+## Next Steps
+
+1. ✅ **Phase 6.1 (WhatsApp Summary)** — DONE: top-3 items by subtotal, dashboard link, item list in reply
+2. ✅ **Phase 6.3 (Website Instructions)** — DONE: How It Works steps, sample output panel, WhatsAppCTA component
+3. ✅ **Phase 6.4 (Language Toggle)** — DONE: LanguageContext with en/ur translations, toggle in header, all components wired, localStorage persistence
+4. ✅ **Phase 6.6 (OCR Columns)** — DONE: detectBillColumns() heuristic, buildKiryanaBillPrompt(layout) with layout hints, layout logged + stored in rawText
+5. ⏸ **Phase 7 (WhatsApp Interactive Menu)** — blocked: requires Meta API template approval
+6. ⏸ **Phase 8 (Audio Voice Messages)** — blocked: requires speech-to-text API integration

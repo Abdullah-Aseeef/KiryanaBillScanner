@@ -2,11 +2,13 @@ import { useState } from 'react';
 import Dashboard from './components/Dashboard';
 import ReviewPanel from './components/ReviewPanel';
 import UploadForm from './components/UploadForm';
+import { useLanguage } from './context/LanguageContext';
 import './App.css';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [refreshKey, setRefreshKey] = useState(0);
+  const { lang, toggle, t } = useLanguage();
 
   const handleUploadSuccess = () => {
     setActiveTab('review');
@@ -18,36 +20,41 @@ function App() {
   };
 
   return (
-    <div className="app">
+    <div className="app" lang={lang === 'ur' ? 'ur' : undefined}>
       <header className="app-header">
         <div className="header-content">
           <div className="logo">
             <span className="logo-icon">🏪</span>
             <div className="logo-text">
               <h1>Tajir</h1>
-              <span className="logo-tagline">Kiryana Bill Scanner</span>
+              <span className="logo-tagline">{t('tagline')}</span>
             </div>
           </div>
-          <nav className="nav-tabs">
-            <button
-              className={`nav-tab ${activeTab === 'dashboard' ? 'active' : ''}`}
-              onClick={() => setActiveTab('dashboard')}
-            >
-              📊 Dashboard
+          <div className="header-right">
+            <nav className="nav-tabs">
+              <button
+                className={`nav-tab ${activeTab === 'dashboard' ? 'active' : ''}`}
+                onClick={() => setActiveTab('dashboard')}
+              >
+                📊 {t('nav_dashboard')}
+              </button>
+              <button
+                className={`nav-tab ${activeTab === 'upload' ? 'active' : ''}`}
+                onClick={() => setActiveTab('upload')}
+              >
+                📸 {t('nav_upload')}
+              </button>
+              <button
+                className={`nav-tab ${activeTab === 'review' ? 'active' : ''}`}
+                onClick={() => setActiveTab('review')}
+              >
+                ✏️ {t('nav_review')}
+              </button>
+            </nav>
+            <button className="lang-toggle" onClick={toggle} title="Switch language">
+              {t('lang_toggle')}
             </button>
-            <button
-              className={`nav-tab ${activeTab === 'upload' ? 'active' : ''}`}
-              onClick={() => setActiveTab('upload')}
-            >
-              📸 Upload
-            </button>
-            <button
-              className={`nav-tab ${activeTab === 'review' ? 'active' : ''}`}
-              onClick={() => setActiveTab('review')}
-            >
-              ✏️ Review
-            </button>
-          </nav>
+          </div>
         </div>
       </header>
 

@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { uploadImage } from '../api';
+import { useLanguage } from '../context/LanguageContext';
+import WhatsAppCTA from './WhatsAppCTA';
 import './UploadForm.css';
 
 function formatFileSize(bytes) {
@@ -19,6 +21,7 @@ function formatFileSize(bytes) {
 
 function UploadForm({ onUploadSuccess = null }) {
   const inputRef = useRef(null);
+  const { t } = useLanguage();
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState('');
   const [dragActive, setDragActive] = useState(false);
@@ -126,8 +129,57 @@ function UploadForm({ onUploadSuccess = null }) {
   return (
     <section className="upload-form fade-in">
       <div className="upload-header">
-        <h2>Upload Bill</h2>
-        <p className="upload-subtitle">Drop a clear bill photo to parse items with Gemini</p>
+        <h2>{t('upload_title')}</h2>
+        <p className="upload-subtitle">{t('upload_subtitle')}</p>
+      </div>
+
+      {/* How it works */}
+      <div className="how-it-works">
+        <div className="how-step">
+          <span className="how-step-num">1</span>
+          <div>
+            <p className="how-step-title">{t('step1_title')}</p>
+            <p className="how-step-desc">{t('step1_desc')}</p>
+          </div>
+        </div>
+        <div className="how-step-arrow">→</div>
+        <div className="how-step">
+          <span className="how-step-num">2</span>
+          <div>
+            <p className="how-step-title">{t('step2_title')}</p>
+            <p className="how-step-desc">{t('step2_desc')}</p>
+          </div>
+        </div>
+        <div className="how-step-arrow">→</div>
+        <div className="how-step">
+          <span className="how-step-num">3</span>
+          <div>
+            <p className="how-step-title">{t('step3_title')}</p>
+            <p className="how-step-desc">{t('step3_desc')}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Sample output */}
+      <div className="sample-output">
+        <p className="sample-label">{t('sample_label')}</p>
+        <div className="sample-rows">
+          {[
+            { item: 'Aalu', qty: '5 kg', price: 'Rs. 300' },
+            { item: 'Basmati Chawal', qty: '2 kg', price: 'Rs. 720' },
+            { item: 'Doodh', qty: '4 pcs', price: 'Rs. 680' },
+          ].map((row) => (
+            <div key={row.item} className="sample-row">
+              <span className="sample-item">{row.item}</span>
+              <span className="sample-qty">{row.qty}</span>
+              <span className="sample-price">{row.price}</span>
+            </div>
+          ))}
+          <div className="sample-total-row">
+            <span>Total</span>
+            <span>Rs. 1,700</span>
+          </div>
+        </div>
       </div>
 
       <input
@@ -199,10 +251,10 @@ function UploadForm({ onUploadSuccess = null }) {
           <>
             <span className="btn-spinner"></span>
             {' '}
-            Processing with Gemini...
+            {t('processing_btn')}
           </>
         ) : (
-          'Upload & Parse Bill'
+          t('upload_btn')
         )}
       </button>
 
@@ -211,9 +263,11 @@ function UploadForm({ onUploadSuccess = null }) {
           <div className="processing-bar">
             <div className="processing-bar-fill"></div>
           </div>
-          AI extraction can take up to a minute for complex images.
+          {t('processing_note')}
         </div>
       )}
+
+      <WhatsAppCTA />
     </section>
   );
 }

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { getBills, verifyBill } from '../api';
+import { useLanguage } from '../context/LanguageContext';
 import './ReviewPanel.css';
 
 function ReviewPanel({ onBillVerified }) {
@@ -9,6 +10,7 @@ function ReviewPanel({ onBillVerified }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState(null);
+  const { t } = useLanguage();
 
   const selectBill = useCallback((bill) => {
     setSelectedBill(bill);
@@ -76,7 +78,7 @@ function ReviewPanel({ onBillVerified }) {
         totalAmount: getTotal(),
       };
       const res = await verifyBill(selectedBill._id, payload);
-      setMessage({ type: 'success', text: 'Bill verified successfully!' });
+      setMessage({ type: 'success', text: t('verified_msg') });
       const updatedBills = bills.map((b) =>
         b._id === selectedBill._id ? res.data : b
       );
@@ -84,7 +86,7 @@ function ReviewPanel({ onBillVerified }) {
       setSelectedBill(res.data);
       if (onBillVerified) onBillVerified();
     } catch (err) {
-      setMessage({ type: 'error', text: 'Failed to verify bill: ' + err.message });
+      setMessage({ type: 'error', text: t('verify_error') + err.message });
     } finally {
       setSaving(false);
     }
@@ -105,7 +107,7 @@ function ReviewPanel({ onBillVerified }) {
     return (
       <div className="review-loading">
         <div className="spinner"></div>
-        <p>Loading bills...</p>
+        <p>{t('loading_bills')}</p>
       </div>
     );
   }
@@ -113,14 +115,14 @@ function ReviewPanel({ onBillVerified }) {
   return (
     <div className="review-panel fade-in">
       <div className="review-header">
-        <h2>Review & Verify</h2>
-        <p className="review-subtitle">Edit scanned results and confirm accuracy</p>
+        <h2>{t('review_title')}</h2>
+        <p className="review-subtitle">{t('review_subtitle')}</p>
       </div>
 
       <div className="review-layout">
         {/* Bills List Sidebar */}
         <div className="bills-sidebar">
-          <h3 className="sidebar-title">Bills</h3>
+          <h3 className="sidebar-title">{t('bills_sidebar')}</h3>
           <div className="bills-list">
             {bills.map((bill) => (
               <button
@@ -146,7 +148,7 @@ function ReviewPanel({ onBillVerified }) {
               </button>
             ))}
             {bills.length === 0 && (
-              <div className="empty-state-sm">No bills found</div>
+              <div className="empty-state-sm">{t('no_bills_found')}</div>
             )}
           </div>
         </div>
@@ -158,19 +160,19 @@ function ReviewPanel({ onBillVerified }) {
               {/* Bill meta */}
               <div className="bill-meta">
                 <div className="meta-row">
-                  <span className="meta-label">Source</span>
+                  <span className="meta-label">{t('meta_source')}</span>
                   <span className={`source-badge source-${selectedBill.source}`}>
                     {selectedBill.source === 'whatsapp' ? '💬' : '🌐'} {selectedBill.source}
                   </span>
                 </div>
                 <div className="meta-row">
-                  <span className="meta-label">Status</span>
+                  <span className="meta-label">{t('meta_status')}</span>
                   <span className={`status-pill status-${selectedBill.status}`}>
                     {selectedBill.status}
                   </span>
                 </div>
                 <div className="meta-row">
-                  <span className="meta-label">Date</span>
+                  <span className="meta-label">{t('meta_date')}</span>
                   <span className="meta-value">
                     {new Date(selectedBill.createdAt).toLocaleString('en-PK')}
                   </span>
@@ -189,10 +191,10 @@ function ReviewPanel({ onBillVerified }) {
                 <table className="edit-table">
                   <thead>
                     <tr>
-                      <th>Item Name</th>
-                      <th>Qty</th>
-                      <th>Price (Rs.)</th>
-                      <th>Subtotal</th>
+                      <th>{t('col_item')}</th>
+                      <th>{t('col_qty')}</th>
+                      <th>{t('col_price')}</th>
+                      <th>{t('col_subtotal')}</th>
                       <th></th>
                     </tr>
                   </thead>
@@ -244,11 +246,11 @@ function ReviewPanel({ onBillVerified }) {
               {/* Footer */}
               <div className="editor-footer">
                 <button className="btn-add-item" onClick={addItem}>
-                  + Add Item
+                  {t('add_item')}
                 </button>
                 <div className="footer-right">
                   <div className="total-display">
-                    <span className="total-label">Total</span>
+                    <span className="total-label">{t('total_label')}</span>
                     <span className="total-value">Rs. {getTotal().toLocaleString()}</span>
                   </div>
                   <button
@@ -258,10 +260,10 @@ function ReviewPanel({ onBillVerified }) {
                   >
                     {saving ? (
                       <>
-                        <span className="btn-spinner"></span> Saving...
+                        <span className="btn-spinner"></span> {t('saving_btn')}
                       </>
                     ) : (
-                      '✅ Confirm & Verify'
+                      t('confirm_btn')
                     )}
                   </button>
                 </div>
@@ -269,7 +271,7 @@ function ReviewPanel({ onBillVerified }) {
             </>
           ) : (
             <div className="empty-state">
-              <p>Select a bill from the sidebar to review</p>
+              <p>{t('select_bill')}</p>
             </div>
           )}
         </div>
