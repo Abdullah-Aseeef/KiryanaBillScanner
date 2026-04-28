@@ -6,3 +6,5 @@ dist/
 .env*
 .env
 .env.example
+service-account-key.json
+server/service-account-key.json

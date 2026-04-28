@@ -1,5 +1,4 @@
 const vision = require('@google-cloud/vision');
-const { ExternalAccountClient } = require('google-auth-library');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { KIRYANA_STRUCTURING_PROMPT } = require('./kiryanaBillPrompt');
 
@@ -48,26 +47,37 @@ function parseStructuredOutput(text) {
 }
 
 function buildVisionClient() {
-  // On Render, RENDER_OIDC_TOKEN_URL is auto-provisioned when OIDC is enabled.
-  // Use Workload Identity Federation — no private key stored anywhere.
-  if (process.env.RENDER_OIDC_TOKEN_URL) {
-    const auth = ExternalAccountClient.fromJSON({
-      type: 'external_account',
-      audience: process.env.GOOGLE_WIF_AUDIENCE,
-      subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
-      token_url: 'https://sts.googleapis.com/v1/token',
-      service_account_impersonation_url:
-        `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL}:generateAccessToken`,
-      credential_source: {
-        url: process.env.RENDER_OIDC_TOKEN_URL,
-        format: { type: 'json', subject_token_field_name: 'value' },
-      },
-    });
-    return new vision.ImageAnnotatorClient({ auth, projectId: process.env.GOOGLE_PROJECT_ID });
+  const projectId = process.env.GOOGLE_PROJECT_ID;
+
+  // Production: base64-encoded service account key (for Render/CI deployment).
+  if (process.env.GOOGLE_CREDENTIALS_B64) {
+    try {
+      const credentialsJson = Buffer.from(process.env.GOOGLE_CREDENTIALS_B64, 'base64').toString('utf-8');
+      const credentials = JSON.parse(credentialsJson);
+      return new vision.ImageAnnotatorClient({
+        projectId: credentials.project_id,
+        credentials,
+      });
+    } catch (error) {
+      console.error('Failed to decode GOOGLE_CREDENTIALS_B64:', error.message);
+      throw new Error('Invalid GOOGLE_CREDENTIALS_B64 environment variable');
+    }
   }
 
-  // Local dev: use Application Default Credentials (gcloud auth application-default login).
-  return new vision.ImageAnnotatorClient({ projectId: process.env.GOOGLE_PROJECT_ID });
+  // Production/Local: explicit service account key in env vars (GOOGLE_CLIENT_EMAIL + GOOGLE_PRIVATE_KEY).
+  if (process.env.GOOGLE_CLIENT_EMAIL && process.env.GOOGLE_PRIVATE_KEY) {
+    return new vision.ImageAnnotatorClient({
+      projectId,
+      credentials: {
+        client_email: process.env.GOOGLE_CLIENT_EMAIL,
+        private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      },
+    });
+  }
+
+  // Local dev: GOOGLE_APPLICATION_CREDENTIALS (service account JSON file path)
+  // The Vision client library auto-loads this when set.
+  return new vision.ImageAnnotatorClient({ projectId });
 }
 
 async function extractOcrText(imageBuffer) {
@@ -132,7 +142,6 @@ const parseImage = async (imageBuffer, mimeType) => {
   try {
     ({ ocrText, rawSnippet } = await extractOcrText(imageBuffer));
     console.log(`Vision OCR: extracted ${ocrText.length} chars (mimeType=${mimeType})`);
-    console.log(`Vision OCR: extracted ${ocrText} chars (mimeType=${mimeType})`);
   } catch (error) {
     console.error('Vision OCR failure:', error.message);
     throw new Error(`Vision OCR failed: ${error.message}`);

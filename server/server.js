@@ -7,10 +7,20 @@ dotenv.config();
 
 // Fail fast on missing required credentials
 const required = ['GOOGLE_PROJECT_ID', 'GEMINI_API_KEY'];
-// WIF vars are only needed on Render (RENDER_OIDC_TOKEN_URL is auto-set by Render when OIDC is enabled)
-if (process.env.RENDER_OIDC_TOKEN_URL) {
-  required.push('GOOGLE_WIF_AUDIENCE', 'GOOGLE_SERVICE_ACCOUNT_EMAIL');
+
+const hasJsonFile = !!process.env.GOOGLE_APPLICATION_CREDENTIALS;
+const hasExplicitCreds = !!(process.env.GOOGLE_CLIENT_EMAIL && process.env.GOOGLE_PRIVATE_KEY);
+
+if (!hasJsonFile && !hasExplicitCreds) {
+  console.error(
+    'FATAL: No Google Cloud Vision credentials found.\n' +
+    'Set one of:\n' +
+    '  A) GOOGLE_APPLICATION_CREDENTIALS (path to service account JSON), or\n' +
+    '  B) GOOGLE_CLIENT_EMAIL + GOOGLE_PRIVATE_KEY (for Render/production)'
+  );
+  process.exit(1);
 }
+
 const missing = required.filter((k) => !process.env[k]);
 if (missing.length > 0) {
   console.error(`FATAL: Missing required env vars: ${missing.join(', ')}`);
@@ -29,7 +39,7 @@ app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
-    visionConfigured: !!process.env.GOOGLE_CLIENT_EMAIL,
+    visionConfigured: !!(process.env.GOOGLE_APPLICATION_CREDENTIALS || (process.env.GOOGLE_CLIENT_EMAIL && process.env.GOOGLE_PRIVATE_KEY)),
     geminiConfigured: !!process.env.GEMINI_API_KEY,
     waConfigured: !!process.env.WA_TOKEN,
   });
