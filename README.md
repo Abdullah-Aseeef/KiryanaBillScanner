@@ -1,8 +1,7 @@
-# The Retail Management Suite
+# Kiryana Bill Scanner
 
 A full-stack, WhatsApp-first retail assistant for small shop owners. The system accepts bill images and voice notes, extracts line items using OCR/speech + LLM structuring, stores records in MongoDB, and exposes a web dashboard for verification, revenue insights, and top-selling products.
 
-> Naming note: this README intentionally uses **The Retail Management Suite / [Project Name]** as requested.
 
 ## Table of Contents
 
@@ -21,7 +20,7 @@ A full-stack, WhatsApp-first retail assistant for small shop owners. The system 
 
 ## Overview
 
-**The Retail Management Suite** helps neighborhood retailers digitize billing and sales tracking through WhatsApp and a lightweight dashboard.
+**Kiryana Bill Scanner** helps neighborhood retailers digitize billing and sales tracking through WhatsApp and a lightweight dashboard.
 
 ### What it does
 
